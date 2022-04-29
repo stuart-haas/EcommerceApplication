@@ -1,0 +1,35 @@
+version: '3.7'
+
+networks:
+  application:
+    driver: bridge
+
+services:
+  ecommerceapplication:
+    image: ${DOCKER_REGISTRY-}ecommerceapplication
+    container_name: ecommerce_api
+    build:
+      context: .
+      dockerfile: EcommerceApplication/Dockerfile
+    ports:
+      - 8000:80
+    networks:
+      - application
+   
+  db:
+    image: postgres:latest
+    container_name: ecommerce_db
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ecommerce_db
+    networks:
+      - application
+
+volumes:
+  db_data:
