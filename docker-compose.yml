@@ -1,9 +1,5 @@
 version: '3.7'
 
-networks:
-  application:
-    driver: bridge
-
 services:
   ecommerceapplication:
     image: ${DOCKER_REGISTRY-}ecommerceapplication
@@ -13,9 +9,9 @@ services:
       dockerfile: EcommerceApplication/Dockerfile
     ports:
       - 8000:80
-    networks:
-      - application
-   
+    volumes:
+      - .:/src
+
   db:
     image: postgres:latest
     container_name: ecommerce_db
@@ -28,8 +24,9 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: ecommerce_db
-    networks:
-      - application
+    extra_hosts:
+      - host.docker.internal:host-gateway 
+
 
 volumes:
   db_data:
